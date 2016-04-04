@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">TestApp</string>
+    <string name="login_btn">Login</string>
+    <string name="register_btn">Register</string>
+    <string name="hint_password">Enter desired password</string>
+    <string name="hint_username">Enter desired username</string>
+    <string name="hint_email">Enter your email</string>
+    <string name="hint_your_un">Enter your username</string>
+    <string name="hint_your_pw">Enter your password</string>
+    <string name="LoG">Lists of Gifts</string>
+    <string name="btn_login">Login</string>
+    <string name="btn_register">Register</string>
+    <string name="remember">Remember details</string>
+    <string name="hint_conf_pass">Confirm desired password</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="hint_wish">Enter desired wish</string>
+    <string name="btn_add">Add</string>
+    <string name="btn_delete">Delete</string>
+    <string name="user_info">User Info</string>
+    <string name="btn_save">Save</string>
+    <string name="hint_your_name">Enter your name</string>
+    <string name="btn_update">Update</string>
+    <string name="hint_new_pass">Enter new password</string>
+    <string name="hint_your_fn">First name</string>
+    <string name="hint_your_ln">Last name</string>
+    <string name="hint_conf_new_pass">Confirm new password</string>
+</resources>

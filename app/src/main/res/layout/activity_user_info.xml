@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="30dp"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.listsofgifts.MainActivity"
+    tools:ignore="SpUsage" >
+
+    <LinearLayout
+        android:id="@+id/signupLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="15dp"
+            android:paddingTop="10dp"
+            android:text="@string/user_info"
+            android:textSize="45dp"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/midLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_margin="10dp"
+        android:layout_weight="0.5"
+        android:background="#ffffff"
+        android:orientation="vertical"
+        android:padding="2dp" >
+
+        <EditText
+            android:id="@+id/info_un"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:hint="@string/hint_your_fn"
+            android:inputType="textPersonName"
+            android:textColorHint="#bbbbbb"
+            android:background="@drawable/rounded_corners"
+            >
+        </EditText>
+
+        <EditText
+            android:id="@+id/info_email"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:hint="@string/hint_your_ln"
+            android:inputType="textEmailAddress"
+            android:textColorHint="#bbbbbb"
+            android:background="@drawable/rounded_corners"
+            >
+        </EditText>
+
+        <EditText
+            android:id="@+id/info_pw"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:hint="@string/hint_conf_new_pass"
+            android:inputType="textPassword"
+            android:textColorHint="#bbbbbb"
+            android:background="@drawable/rounded_corners"
+            >
+        </EditText>
+
+        <EditText
+            android:id="@+id/info_pwc"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:hint="@string/hint_conf_pass"
+            android:inputType="textPassword"
+            android:textColorHint="#bbbbbb"
+            android:background="@drawable/rounded_corners"
+            >
+        </EditText>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/botLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/infoSaveBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_margin="4dp"
+            android:text="@string/btn_update"
+            android:background="#F2473F"
+            android:textAllCaps="false"
+            android:textSize="20sp"
+            />
+        <Button
+            android:id="@+id/infoCancelBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:text="@string/btn_cancel"
+            android:background="#F2473F"
+            android:textAllCaps="false"
+            android:textSize="20sp"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>
+
