@@ -1,13 +1,192 @@
 package erlach.testapp;
 
+import android.app.ListActivity;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
-public class UserActivity extends AppCompatActivity {
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+public class UserActivity extends ListActivity {
+
+    // Progress Dialog
+    private ProgressDialog pDialog;
+    ArrayList<HashMap<String, String>> wishList;
+
+    // JSON Node names
+    private static final String RET_SUCCESS = "success";
+    private static final String RET_WISHES = "wishes";
+    private static final String RET_WID = "pid";
+    private static final String RET_WISH = "name";
+
+    // products JSONArray
+    JSONArray wishes = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
+
+        // Hashmap for ListView
+        wishList = new ArrayList<HashMap<String, String>>();
+        RetrieveWishes getWishList = new RetrieveWishes();
+        getWishList.execute("un", "wishListId");
+
+        // Get listview
+        ListView wishListLw = getListView();
+
+        wishListLw.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Get wishlist
+                String wid = ((TextView) view.findViewById(R.id.wid)).getText().toString();
+
+                // Starting new intent
+                Intent editScreen = new Intent(getApplicationContext(),
+                        EditWishActivity.class);
+                // sending pid to next activity
+                editScreen.putExtra(RET_WID, wid);
+
+                // starting new activity and expecting some response back
+                startActivityForResult(editScreen, 100);
+            }
+        });
+    }
+    // Response from Edit Product Activity
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // if result code 100
+        if (resultCode == 100) {
+            // if result code 100 is received
+            // means user edited/deleted product
+            // reload this screen again
+            Intent intent = getIntent();
+            finish();
+            startActivity(intent);
+        }
+
+    }
+
+    class RetrieveWishes extends AsyncTask<String, String, String> {
+
+        @Override
+        protected void onPreExecute() {
+            pDialog = new ProgressDialog(UserActivity.this);
+            pDialog.setMessage("Retrieving wishList. Please wait...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            HttpURLConnection conn;
+            String response = "";
+
+            try {
+                java.net.URL url = new URL("http://ec2-54-191-47-17.us-west-2.compute.amazonaws.com/test_login/login.php");
+                // Set parameters to be sent
+                Map<String, Object> parameters = new LinkedHashMap<>();
+                parameters.put("un", params[0]);
+                parameters.put("pw", params[1]);
+
+                // Build and encode parameters
+                StringBuilder postData = new StringBuilder();
+                for (Map.Entry<String, Object> param : parameters.entrySet()) {
+                    if (postData.length() != 0) postData.append('&');
+                    postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
+                    postData.append('=');
+                    postData.append(URLEncoder.encode(String.valueOf(param.getValue()), "UTF-8"));
+                }
+                byte[] postDataBytes = postData.toString().getBytes("UTF-8");
+
+                // Set properties of request
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setDoOutput(true);
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
+                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                conn.getOutputStream().write(postDataBytes);
+
+                // Get response
+                StringBuilder sb = new StringBuilder();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                }
+                response = sb.toString();
+                Log.d("Wishes: ", response);
+                JSONObject object = new JSONObject(response);
+
+                try {
+                    int success = object.getInt("success");
+                    if (success == 1) {
+                        for (int i = 0; i < wishes.length(); i++) {
+                            JSONObject c = wishes.getJSONObject(i);
+
+                            // Storing each json item in variable
+                            String wId = c.getString(RET_WID);
+                            String wishName = c.getString(RET_WISH);
+
+                            // creating new HashMap
+                            HashMap<String, String> map = new HashMap<String, String>();
+                            map.put(RET_WID, wId);
+                            map.put(RET_WISH, wishName);
+                            wishList.add(map);
+                        }
+                    } else {
+                        // No wishList
+                        Intent userScreen = new Intent(getApplicationContext(), CreateWishListActivity.class);
+                        // Closing all previous activities
+                        userScreen.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(userScreen);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+            } catch (Exception e) {
+                Log.d("Exception: ", e.getLocalizedMessage());
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            // Send info
+            pDialog.dismiss();
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    // Update listview
+                    ListAdapter adapter = new SimpleAdapter(UserActivity.this, wishList, R.layout.wishitem, new String[]{RET_WID, RET_WISH},
+                            new int[]{R.id.wid, R.id.wishName});
+                    setListAdapter(adapter);
+                }
+            });
+        }
+
     }
 }

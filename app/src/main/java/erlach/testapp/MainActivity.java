@@ -35,7 +35,6 @@ import java.util.Map;
 
 public class MainActivity extends Activity {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
     private ProgressDialog pDialog;
     EditText username, password;
     Button loginBtn, regBtn;
@@ -43,8 +42,6 @@ public class MainActivity extends Activity {
     private boolean saveLogin;
     private SharedPreferences loginPref;
     private SharedPreferences.Editor loginPrefEditor;
-    String loginUrl = "http://ec2-54-191-47-17.us-west-2.compute.amazonaws.com/test_login/login.php";
-    String response = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +118,7 @@ public class MainActivity extends Activity {
         @Override
         protected String doInBackground(String... params) {
             HttpURLConnection conn;
-            String result = "";
+            String response = "";
 
             try {
                 URL url = new URL("http://ec2-54-191-47-17.us-west-2.compute.amazonaws.com/test_login/login.php");
@@ -151,86 +148,24 @@ public class MainActivity extends Activity {
                 // Get response
                 StringBuilder sb = new StringBuilder();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-                String line = null;
+                String line;
 
                 while ((line = reader.readLine()) != null) {
                     sb.append(line);
                 }
-                result = sb.toString();
-                Log.d("Logged in: ", result);
+                response = sb.toString();
+                Log.d("Logged in: ", response);
             } catch (IOException e) {
                 Log.d("IO exc: ", e.getLocalizedMessage());
             } catch (Exception e) {
                 Log.d("Exception: ", e.getLocalizedMessage());
             }
-            return result;
+            return response;
         }
         @Override
         protected void onPostExecute(String result) {
             // Send info
-            pDialog.hide();
+            pDialog.dismiss();
         }
-    }
-
-    private void tryLogin(final String username, final String password) {
-
-        pDialog = new ProgressDialog(MainActivity.this);
-        pDialog.setMessage("Logging in. Please wait...");
-        pDialog.setIndeterminate(false);
-        pDialog.setCancelable(false);
-        pDialog.show();
-
-        // Set parameters to be sent
-        /*Map<String,Object> params = new LinkedHashMap<>();
-        params.put("un", username);
-        params.put("pw", password);
-        */
-        StringRequest strReq = new StringRequest(Request.Method.POST, loginUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d(TAG, "Login Response: " + response);
-                pDialog.hide();
-
-                try {
-                    JSONObject jObj = new JSONObject(response);
-                    boolean error = jObj.getBoolean("error");
-                    // Check for error in json response
-                    if (!error) {
-                        // user successfully logged in
-                        // Create login session
-                        Intent intent = new Intent(MainActivity.this, UserActivity.class);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        // Error logging in
-                        String errorMsg = jObj.getString("msg");
-                        Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_LONG).show();
-                    }
-            } catch (JSONException e) {
-                    // JSON error
-                    e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Login Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
-                pDialog.hide();
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                // Posting parameters to login url
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("username", username);
-                params.put("password", password);
-                return params;
-            }
-        };
-        // Adding request to request queue
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(strReq);
     }
 }

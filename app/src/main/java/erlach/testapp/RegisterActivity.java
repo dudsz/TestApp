@@ -33,7 +33,6 @@ import java.util.Map;
 
 public class RegisterActivity extends Activity {
 
-    private static final String TAG = RegisterActivity.class.getSimpleName();
     private ProgressDialog pDialog;
     EditText tUn, tPw, tPwc, tEmail;
     Button cancelBtn, regBtn;
@@ -140,7 +139,7 @@ public class RegisterActivity extends Activity {
         @Override
         protected void onPostExecute(String result) {
             // Send info
-            pDialog.hide();
+            pDialog.dismiss();
         }
     }
 }
