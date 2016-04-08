@@ -24,4 +24,13 @@
     <string name="hint_your_fn">First name</string>
     <string name="hint_your_ln">Last name</string>
     <string name="hint_conf_new_pass">Confirm new password</string>
+    <string name="create_wl">Create a wish list</string>
+    <string name="hint_wn">Enter wish name</string>
+    <string name="hint_wd">Enter wish description</string>
+    <string name="hint_wpl">Enter purchasable location</string>
+    <string name="wish_info">Wish info</string>
+    <string name="hint_wish_name">Enter desired wish</string>
+    <string name="hint_wish_desc">Enter description of wish</string>
+    <string name="hint_wish_place">Enter purchasable location</string>
+    <string name="hint_wish_list">Choose wishlist to add it to</string>
 </resources>

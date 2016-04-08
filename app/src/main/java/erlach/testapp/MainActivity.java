@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -42,6 +43,11 @@ public class MainActivity extends Activity {
     private boolean saveLogin;
     private SharedPreferences loginPref;
     private SharedPreferences.Editor loginPrefEditor;
+    JSONObject jObj = null;
+    private static final String RET_SUCCESS = "success";
+    private static final String KEY_USERNAME = "un";
+    private static final String KEY_PASSWORD = "pw";
+    private static final String URL_LOGIN = "http://ec2-54-191-47-17.us-west-2.compute.amazonaws.com/test_login/login.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +62,10 @@ public class MainActivity extends Activity {
         loginPref = getSharedPreferences("loginPrefs", MODE_PRIVATE);
         loginPrefEditor = loginPref.edit();
 
+        // Progress dialog
         pDialog = new ProgressDialog(this);
         pDialog.setCancelable(false);
+        pDialog.setIndeterminate(false);
 
         saveLogin = loginPref.getBoolean("saveLogin", false);
         if (saveLogin) {
@@ -88,15 +96,11 @@ public class MainActivity extends Activity {
                 }
                 // Create new login
                 if (!un.isEmpty() && !pw.isEmpty()) {
-                    AsyncLogin loginAttempt = new AsyncLogin();
-                    loginAttempt.execute(un, pw);
-                    //tryLogin(un, pw);
-                    Log.d("LogAc", "Login successfull");
-                    Toast.makeText(MainActivity.this,
-                            "Successfully Logged In", Toast.LENGTH_LONG).show();
+                    //AsyncLogin loginAttempt = new AsyncLogin();
+                    //loginAttempt.execute(un, pw);
+
+                    loginRequest(un, pw);
                     // Send login info?
-                    Intent userScreen = new Intent(MainActivity.this, UserActivity.class);
-                    startActivity(userScreen);
                 } else {
                     Toast.makeText(MainActivity.this,
                             "Invalid username or password", Toast.LENGTH_LONG).show();
@@ -154,18 +158,97 @@ public class MainActivity extends Activity {
                     sb.append(line);
                 }
                 response = sb.toString();
-                Log.d("Logged in: ", response);
+                Log.d("Login response: ", response);
+
             } catch (IOException e) {
                 Log.d("IO exc: ", e.getLocalizedMessage());
             } catch (Exception e) {
                 Log.d("Exception: ", e.getLocalizedMessage());
             }
-            return response;
+
+            // Parse to json object
+            try {
+                jObj = new JSONObject(response);
+            } catch (JSONException e) {
+                Log.e("JSON Parsing error", e.toString());
+            }
+            try {
+                int success = jObj.getInt(RET_SUCCESS);
+                if (success == 1) {
+                    // Successfully added wish
+                    Intent userScreen = new Intent(MainActivity.this, UserActivity.class);
+                    startActivity(userScreen);
+                    finish();
+                } else {
+                    // Add something
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
         @Override
         protected void onPostExecute(String result) {
             // Send info
             pDialog.dismiss();
         }
+    }
+
+    private void loginRequest(final String un, final String pw) {
+
+        pDialog.setMessage("Logging in. Please wait...");
+        pDialog.show();
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_LOGIN,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        pDialog.dismiss();
+                        Log.d("Login: ", response);
+
+                        try {
+                            JSONObject jObj = new JSONObject(response);
+                            int success = jObj.getInt(RET_SUCCESS);
+
+                            // If successfully added
+                            if (success == 1) {
+                                JSONObject user = jObj.getJSONObject("user");
+                                String username = user.getString("username");
+
+                                Log.d("Username: ", username);
+                                // Launch main activity
+                                Intent userScreen = new Intent(MainActivity.this, UserActivity.class);
+                                userScreen.putExtra("un", username);
+                                startActivity(userScreen);
+                                finish();
+                            } else {
+                                // Error in login. Get the error message
+                                String errorMsg = jObj.getString("error_msg");
+                                Toast.makeText(MainActivity.this, "Error: " + errorMsg, Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            // JSON error
+                            e.printStackTrace();
+                            Toast.makeText(MainActivity.this, "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(MainActivity.this,error.toString(),Toast.LENGTH_LONG).show();
+                    }
+                }) {
+            @Override
+            protected Map<String,String> getParams() {
+                Map<String,String> params = new HashMap<String, String>();
+                params.put(KEY_USERNAME, un);
+                params.put(KEY_PASSWORD, pw);
+                return params;
+            }
+        };
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AppRequestController.getInstance().addToRequestQueue(stringRequest);
     }
 }

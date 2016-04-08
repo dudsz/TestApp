@@ -16,40 +16,31 @@
         android:id="@+id/topLayout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="1.1"
+        android:layout_weight="1.3"
         android:orientation="horizontal"
         android:padding="2dp"
         >
-        <EditText
-            android:id="@+id/user_wishField"
-            android:layout_width="280dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rounded_corners"
-            android:hint="@string/hint_wish"
+        <TextView
+            android:id="@+id/wish_username"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:textAlignment="center"
-            android:padding="10dp"
-            android:textColorHint="#cccccc"
-            />
-        <Button
-            android:id="@+id/userAddBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_add"
-            android:background="#F2473F"
             android:textAllCaps="false"
             android:textSize="20sp"
             />
+
     </LinearLayout>
     <LinearLayout
         android:id="@+id/middleLayout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="0.45"
+        android:layout_weight="0.5"
         android:orientation="vertical"
         android:padding="2dp"
         >
         <ListView
-            android:id="@+id/wishList"
+            android:id="@+id/list"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:choiceMode="multipleChoice"
@@ -61,46 +52,29 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1.2"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         >
         <Button
-            android:id="@+id/userDelBtn"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:text="@string/btn_delete"
+            android:id="@+id/btn_add"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:layout_marginTop="10dp"
+            android:text="@string/btn_add"
             android:background="#F2473F"
             android:textAllCaps="false"
             android:textSize="20sp"
             />
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/iconLayout"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1.2"
-        android:orientation="horizontal"
-        android:padding="2dp"
-        >
-        <ImageButton
-            android:id="@+id/iconBtn1"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            />
-        <ImageButton
-            android:id="@+id/iconBtn2"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            />
-        <ImageButton
-            android:id="@+id/iconBtn3"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
+        <Button
+            android:id="@+id/btn_del"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:layout_marginTop="10dp"
+            android:text="@string/btn_delete"
+            android:background="#F2473F"
+            android:textAllCaps="false"
+            android:textSize="20sp"
             />
     </LinearLayout>
 </LinearLayout>

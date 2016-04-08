@@ -1,12 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    android:padding="30dp"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="erlach.testapp.CreateWishListActivity">
+    tools:context="com.listsofgifts.MainActivity"
+    tools:ignore="SpUsage" >
 
-</RelativeLayout>
+    <LinearLayout
+        android:id="@+id/createWishListLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingStart="15dp"
+            android:paddingLeft="15dp"
+            android:paddingEnd="15dp"
+            android:paddingTop="10dp"
+            android:text="@string/create_wl"
+            android:textSize="35dp"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/midLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_margin="10dp"
+        android:layout_weight="0.5"
+        android:background="#ffffff"
+        android:orientation="vertical"
+        android:paddingTop="15dp" >
+
+        <EditText
+            android:id="@+id/cr_wishName"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:padding="10dp"
+            android:hint="@string/hint_wn"
+            android:inputType="textPersonName"
+            android:textColorHint="#bbbbbb"
+            android:background="@drawable/rounded_corners"
+            >
+        </EditText>
+
+        <EditText
+            android:id="@+id/cr_wishDesc"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:padding="10dp"
+            android:hint="@string/hint_wd"
+            android:inputType="textEmailAddress"
+            android:textColorHint="#bbbbbb"
+            android:background="@drawable/rounded_corners"
+            >
+        </EditText>
+
+        <EditText
+            android:id="@+id/cr_wishPL"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:padding="10dp"
+            android:hint="@string/hint_wpl"
+            android:inputType="textEmailAddress"
+            android:textColorHint="#bbbbbb"
+            android:background="@drawable/rounded_corners"
+            >
+        </EditText>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/botLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/btn_create_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_margin="4dp"
+            android:text="@string/btn_save"
+            android:background="#F2473F"
+            android:textAllCaps="false"
+            android:textSize="20sp"
+            />
+        <Button
+            android:id="@+id/btn_create_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:text="@string/btn_cancel"
+            android:background="#F2473F"
+            android:textAllCaps="false"
+            android:textSize="20sp"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>
+
