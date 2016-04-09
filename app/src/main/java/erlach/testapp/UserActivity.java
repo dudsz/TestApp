@@ -41,7 +41,7 @@ import java.util.Map;
 public class UserActivity extends Activity {
 
     private ProgressDialog pDialog;
-    ArrayList<HashMap<String, String>> wishList;
+    ArrayList<HashMap<String, String>> wishArrayList;
     TextView showUsername;
     Button addBtn, delBtn;
 
@@ -49,7 +49,10 @@ public class UserActivity extends Activity {
     private static final String RET_SUCCESS = "success";
     private static final String RET_WISHES = "wishes";
     private static final String RET_WID = "wID";
-    private static final String RET_WISH = "wishName";
+    private static final String RET_WISH_NAME = "wishName";
+    private static final String RET_WISH_LIST = "wishList";
+    private static final String RET_WISH_DESC = "wishDesc";
+    private static final String RET_WISH_PLACE = "wishPlace";
     private static final String KEY_USERNAME = "un";
     private static final String KEY_WL = "wl";
     private static final String URL_ADD_WISH = "http://ec2-54-191-47-17.us-west-2.compute.amazonaws.com/test_wishes/getWl.php";
@@ -70,14 +73,11 @@ public class UserActivity extends Activity {
 
         showUsername.setText(username);
         // Hashmap for ListView
-        wishList = new ArrayList<HashMap<String, String>>();
+        wishArrayList = new ArrayList<HashMap<String, String>>();
         RetrieveWishes getWishList = new RetrieveWishes();
-        getWishList.execute("un", "wl");
-        //getWishList("markus", "Jul");
-
+        getWishList.execute(username, "Jul");
 
         // Get listview
-        //ListView lw = getListView();
         lw = (ListView) findViewById(R.id.list);
 
         lw.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -85,10 +85,13 @@ public class UserActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Get wishlist
                 String wid = ((TextView) view.findViewById(R.id.wid)).getText().toString();
+                String wn = ((TextView) view.findViewById(R.id.wishName)).getText().toString();
                 // Starting new intent
                 Intent editScreen = new Intent(UserActivity.this, EditWishActivity.class);
                 // sending pid to next activity
                 editScreen.putExtra(RET_WID, wid);
+                //editScreen.putExtra(RET_WISH_LIST, wl);
+                editScreen.putExtra(RET_WISH_NAME, wn);
                 // starting new activity and expecting some response back
                 startActivityForResult(editScreen, 100);
             }
@@ -143,8 +146,8 @@ public class UserActivity extends Activity {
                 java.net.URL url = new URL(URL_ADD_WISH);
                 // Set parameters to be sent
                 Map<String, Object> parameters = new LinkedHashMap<>();
-                parameters.put("un", "markus"); //params[0]
-                parameters.put("wl", "Jul"); //params[1]
+                parameters.put("un", params[0]); //params[0]
+                parameters.put("wl", params[1]); //params[1]
 
                 // Build and encode parameters
                 StringBuilder postData = new StringBuilder();
@@ -185,13 +188,19 @@ public class UserActivity extends Activity {
 
                             // Storing each json item in variable
                             String wId = wishObj.getString(RET_WID);
-                            String wishName = wishObj.getString(RET_WISH);
+                            String wishList = wishObj.getString(RET_WISH_LIST);
+                            String wishName = wishObj.getString(RET_WISH_NAME);
+                            String wishDesc = wishObj.getString(RET_WISH_DESC);
+                            String wishPlace = wishObj.getString(RET_WISH_PLACE);
 
                             // creating new HashMap
                             HashMap<String, String> map = new HashMap<String, String>();
                             map.put(RET_WID, wId);
-                            map.put(RET_WISH, wishName);
-                            wishList.add(map);
+                            map.put(RET_WISH_LIST, wishList);
+                            map.put(RET_WISH_NAME, wishName);
+                            map.put(RET_WISH_DESC, wishDesc);
+                            map.put(RET_WISH_PLACE, wishPlace);
+                            wishArrayList.add(map);
                         }
                     } else {
                         // No wishList
@@ -215,8 +224,9 @@ public class UserActivity extends Activity {
             runOnUiThread(new Runnable() {
                 public void run() {
                     // Update listview
-                    ListAdapter adapter = new SimpleAdapter(UserActivity.this, wishList, R.layout.wishitem, new String[]{ RET_WID, RET_WISH},
-                            new int[]{R.id.wid, R.id.wishName});
+                    ListAdapter adapter = new SimpleAdapter(UserActivity.this, wishArrayList, R.layout.wishitem,
+                            new String[]{ RET_WID, RET_WISH_NAME, RET_WISH_DESC, RET_WISH_PLACE},
+                            new int[]{R.id.wid, R.id.wishName, R.id.wishDesc, R.id.wishPlace});
                     lw.setAdapter(adapter);
                     //setListAdapter(adapter);
                 }
@@ -249,7 +259,7 @@ public class UserActivity extends Activity {
 
                                     // Storing each json item in variable
                                     String wId = wishObj.getString(RET_WID);
-                                    String wishName = wishObj.getString(RET_WISH);
+                                    String wishName = wishObj.getString(RET_WISH_NAME);
                                     String username = wishObj.getString("username");
 
                                     Log.d("Username: ", username);

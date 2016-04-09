@@ -223,7 +223,7 @@ public class MainActivity extends Activity {
                                 finish();
                             } else {
                                 // Error in login. Get the error message
-                                String errorMsg = jObj.getString("error_msg");
+                                String errorMsg = jObj.getString("msg");
                                 Toast.makeText(MainActivity.this, "Error: " + errorMsg, Toast.LENGTH_LONG).show();
                             }
                         } catch (JSONException e) {

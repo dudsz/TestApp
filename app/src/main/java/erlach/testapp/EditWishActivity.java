@@ -9,6 +9,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,26 +34,22 @@ import java.util.Map;
 public class EditWishActivity extends AppCompatActivity {
 
     private ProgressDialog pDialog;
-    ArrayList<HashMap<String, String>> wishArrayList;
 
     Button updBtn, delBtn;
     EditText wishName, wishWList, wishDesc, wishPlace;
-    String wid;
+    String wid, wn;
 
     // JSON names
     private static final String RET_SUCCESS = "success";
-    private static final String RET_WISHES = "wishes";
+    private static final String RET_WISH = "wish";
     private static final String RET_WID = "wID";
-    private static final String RET_WISH_WL = "wishList";
     private static final String RET_WISH_NAME = "wishName";
-    private static final String RET_WISH_DESC = "wishName";
-    private static final String RET_WISH_PLACE = "wishName";
-    private static final String KEY_USERNAME = "un";
+    private static final String RET_WISH_DESC = "wishDesc";
+    private static final String RET_WISH_PLACE = "wishPlace";
+    private static final String KEY_UN = "un";
     private static final String KEY_WL = "wl";
-    private static final String URL_ADD_WISH = "http://ec2-54-191-47-17.us-west-2.compute.amazonaws.com/test_wishes/getWl.php";
-
-    // products JSONArray
-    JSONArray wishes = null;
+    private static final String KEY_WN = "wn";
+    private static final String URL_GET_WISH = "http://ec2-54-191-47-17.us-west-2.compute.amazonaws.com/test_wishes/getWish.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,11 +58,20 @@ public class EditWishActivity extends AppCompatActivity {
 
         // Get wish id
         wid = getIntent().getStringExtra("wID");
+        wn = getIntent().getStringExtra("wishName");
         // save button
         updBtn = (Button) findViewById(R.id.btn_update);
         delBtn = (Button) findViewById(R.id.btn_delete);
 
-        wishArrayList = new ArrayList<HashMap<String, String>>();
+        // Progress dialog
+        pDialog = new ProgressDialog(this);
+        pDialog.setCancelable(false);
+        pDialog.setIndeterminate(false);
+
+        Log.d("WishID: ", wid);
+        Log.d("WishName: ", wn);
+
+        getWish("markus", "Jul", wn);
 
         // Change buttons
         updBtn.setOnClickListener(new View.OnClickListener() {
@@ -72,105 +85,74 @@ public class EditWishActivity extends AppCompatActivity {
             }
         });
     }
-    private class RetrieveWishes extends AsyncTask<String, String, String> {
 
-        @Override
-        protected void onPreExecute() {
-            pDialog = new ProgressDialog(EditWishActivity.this);
-            pDialog.setMessage("Retrieving wishList. Please wait...");
-            pDialog.setIndeterminate(false);
-            pDialog.setCancelable(false);
-            pDialog.show();
-        }
+    private void getWish(final String un, final String wl, final String wn) {
 
-        @Override
-        protected String doInBackground(String... params) {
+        pDialog.setMessage("Getting wish item. Please wait...");
+        pDialog.show();
 
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    HttpURLConnection conn;
-                    String response = "";
-                    try {
-                        java.net.URL url = new URL(URL_ADD_WISH);
-                        // Set parameters to be sent
-                        Map<String, Object> parameters = new LinkedHashMap<>();
-                        parameters.put("un", "markus"); //params[0]
-                        parameters.put("wl", "Jul"); //params[1]
-
-                        // Build and encode parameters
-                        StringBuilder postData = new StringBuilder();
-                        for (Map.Entry<String, Object> param : parameters.entrySet()) {
-                            if (postData.length() != 0) postData.append('&');
-                            postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
-                            postData.append('=');
-                            postData.append(URLEncoder.encode(String.valueOf(param.getValue()), "UTF-8"));
-                        }
-                        byte[] postDataBytes = postData.toString().getBytes("UTF-8");
-
-                        // Set properties of request
-                        conn = (HttpURLConnection) url.openConnection();
-                        conn.setDoOutput(true);
-                        conn.setRequestMethod("POST");
-                        conn.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
-                        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                        conn.getOutputStream().write(postDataBytes);
-
-                        // Get response
-                        StringBuilder sb = new StringBuilder();
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-                        String line;
-
-                        while ((line = reader.readLine()) != null) {
-                            sb.append(line);
-                        }
-                        response = sb.toString();
-                        Log.d("Wishes: ", response);
-                        JSONObject jsonObject = new JSONObject(response);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_GET_WISH,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        pDialog.dismiss();
+                        Log.d("Get wish: ", response);
 
                         try {
-                            int success = jsonObject.getInt(RET_SUCCESS);
+                            JSONObject jObj = new JSONObject(response);
+                            int success = jObj.getInt(RET_SUCCESS);
+
+                            // If successfully added
                             if (success == 1) {
-                                wishes = jsonObject.getJSONArray(RET_WISHES);
-                                for (int i = 0; i < wishes.length(); i++) {
-                                    JSONObject wishObj = wishes.getJSONObject(i);
 
-                                    // Storing each json item in variable
-                                    String wId = wishObj.getString(RET_WID);
-                                    String wNO = wishObj.getString(RET_WISH_NAME);
-                                    String wLO = wishObj.getString(RET_WISH_WL);
-                                    String wDO = wishObj.getString(RET_WISH_DESC);
-                                    String wPO = wishObj.getString(RET_WISH_PLACE);
+                                JSONObject wishObj = jObj.getJSONObject(RET_WISH);
 
-                                    wishName = (EditText) findViewById(R.id.wish_name);
-                                    wishWList = (EditText) findViewById(R.id.wish_wl);
-                                    wishDesc = (EditText) findViewById(R.id.wish_desc);
-                                    wishPlace = (EditText) findViewById(R.id.wish_place);
+                                wishWList = (EditText) findViewById(R.id.wish_wl);
+                                wishName = (EditText) findViewById(R.id.wish_name);
+                                wishDesc = (EditText) findViewById(R.id.wish_desc);
+                                wishPlace = (EditText) findViewById(R.id.wish_place);
 
-                                    wishName.setText(wNO);
-                                    wishWList.setText(wLO);
-                                    wishDesc.setText(wDO);
-                                    wishPlace.setText(wPO);
-                                }
+                                String wN = wishObj.getString(RET_WISH_NAME);
+                                Log.d("Wn: ", wN);
+                                String wD = wishObj.getString(RET_WISH_DESC);
+                                Log.d("WD: ", wD);
+                                String wP = wishObj.getString(RET_WISH_PLACE);
+                                Log.d("WP: ", wP);
+
+                                wishWList.setText(wl);
+                                wishName.setText(wishObj.getString(RET_WISH_NAME));
+                                wishDesc.setText(wishObj.getString(RET_WISH_DESC));
+                                wishPlace.setText(wishObj.getString(RET_WISH_PLACE));
+
                             } else {
-                                // No wishList
-                                Intent userScreen = new Intent(getApplicationContext(), CreateWishListActivity.class);
-                                // Closing all previous activities
-                                userScreen.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(userScreen);
+                                // Error in login. Get the error message
+                                String errorMsg = jObj.getString("msg");
+                                Toast.makeText(EditWishActivity.this, "Error: " + errorMsg, Toast.LENGTH_LONG).show();
                             }
                         } catch (JSONException e) {
+                            // JSON error
                             e.printStackTrace();
+                            Toast.makeText(EditWishActivity.this, "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                         }
-                    } catch (Exception e) {
-                        Log.d("Exception: ", e.getLocalizedMessage());
                     }
-                }
-            });
-            return null;
-        }
-        @Override
-        protected void onPostExecute(String result) {
-            pDialog.dismiss();
-        }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(EditWishActivity.this,error.toString(),Toast.LENGTH_LONG).show();
+                    }
+                }) {
+            @Override
+            protected Map<String,String> getParams() {
+                Map<String,String> params = new HashMap<String, String>();
+                params.put(KEY_UN, un);
+                params.put(KEY_WL, wl);
+                params.put(KEY_WN, wn);
+                return params;
+            }
+        };
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AppRequestController.getInstance().addToRequestQueue(stringRequest);
     }
 }
