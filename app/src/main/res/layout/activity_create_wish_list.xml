@@ -26,6 +26,7 @@
             android:paddingLeft="15dp"
             android:paddingEnd="15dp"
             android:paddingTop="10dp"
+            android:textAlignment="center"
             android:text="@string/create_wl"
             android:textSize="35dp"
             />
@@ -42,11 +43,37 @@
         android:paddingTop="15dp" >
 
         <EditText
-            android:id="@+id/cr_wishName"
+            android:id="@+id/cr_wishListName"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:padding="10dp"
-            android:hint="@string/hint_wn"
+            android:hint="@string/hint_wl_name"
+            android:inputType="textPersonName"
+            android:textColorHint="#bbbbbb"
+            android:background="@drawable/rounded_corners"
+            >
+        </EditText>
+
+        <TextView
+            android:id="@+id/create_wl_info"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:paddingStart="15dp"
+            android:paddingLeft="15dp"
+            android:paddingEnd="15dp"
+            android:paddingTop="30dp"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textSize="20sp"
+            android:text="@string/hint_create_add"
+            />
+
+        <EditText
+            android:id="@+id/cr_list_wishName"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:padding="10dp"
+            android:hint="@string/hint_wish_name"
             android:inputType="textPersonName"
             android:textColorHint="#bbbbbb"
             android:background="@drawable/rounded_corners"
@@ -54,11 +81,11 @@
         </EditText>
 
         <EditText
-            android:id="@+id/cr_wishDesc"
+            android:id="@+id/cr_list_wishDesc"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:padding="10dp"
-            android:hint="@string/hint_wd"
+            android:hint="@string/hint_wish_desc"
             android:inputType="textEmailAddress"
             android:textColorHint="#bbbbbb"
             android:background="@drawable/rounded_corners"
@@ -66,11 +93,11 @@
         </EditText>
 
         <EditText
-            android:id="@+id/cr_wishPL"
+            android:id="@+id/cr_list_wishPlace"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:padding="10dp"
-            android:hint="@string/hint_wpl"
+            android:padding="15dp"
+            android:hint="@string/hint_wish_place"
             android:inputType="textEmailAddress"
             android:textColorHint="#bbbbbb"
             android:background="@drawable/rounded_corners"
@@ -87,12 +114,12 @@
         android:orientation="vertical" >
 
         <Button
-            android:id="@+id/btn_create_save"
+            android:id="@+id/btn_create_create"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:layout_margin="4dp"
-            android:text="@string/btn_save"
+            android:text="@string/btn_create"
             android:background="#F2473F"
             android:textAllCaps="false"
             android:textSize="20sp"

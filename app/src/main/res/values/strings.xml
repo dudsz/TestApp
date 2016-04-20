@@ -33,4 +33,8 @@
     <string name="hint_wish_desc">Enter description of wish</string>
     <string name="hint_wish_place">Enter purchasable location</string>
     <string name="hint_wish_list">Choose wishlist to add it to</string>
+    <string name="btn_create">Create List</string>
+    <string name="hint_wl_name">Enter name of wishlist</string>
+    <string name="hint_wl_desc">Enter wishlist description</string>
+    <string name="hint_create_add">Add a wish to your list</string>
 </resources>

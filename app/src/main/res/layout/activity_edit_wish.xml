@@ -86,9 +86,9 @@
             android:inputType="textEmailAddress"
             android:textColorHint="#bbbbbb"
             android:background="@drawable/rounded_corners"
-
             >
         </EditText>
+
     </LinearLayout>
 
     <LinearLayout

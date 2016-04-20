@@ -12,6 +12,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,6 +27,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -29,127 +36,120 @@ public class CreateWishListActivity extends Activity {
     // Progress Dialog
     private ProgressDialog pDialog;
     EditText inWishName, inWishDesc, inWishPlace;
-    private static final String RET_SUCCESS = "success";
+    String un, wl;
     JSONObject jObj = null;
+
+    private static final String RET_SUCCESS = "success";
+    private static final String KEY_UN = "un";
+    private static final String KEY_WL = "wl";
+    private static final String KEY_WN = "wn";
+    private static final String KEY_WD = "wd";
+    private static final String KEY_WPL = "wpl";
+    private static final String URL_CREATE_LIST = "http://ec2-54-191-47-17.us-west-2.compute.amazonaws.com/test_wishes/addWish.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_wish_list);
 
+        // Progress dialog
+        pDialog = new ProgressDialog(this);
+        pDialog.setCancelable(false);
+        pDialog.setIndeterminate(false);
+
+        // Get data from activity
+        wl = getIntent().getStringExtra("wl");
+        un = getIntent().getStringExtra("un");
+
         // Edit Text
-        inWishName = (EditText) findViewById(R.id.cr_wishName);
-        inWishDesc = (EditText) findViewById(R.id.cr_wishDesc);
-        inWishPlace = (EditText) findViewById(R.id.cr_wishPL);
+        inWishName = (EditText) findViewById(R.id.cr_list_wishName);
+        inWishDesc = (EditText) findViewById(R.id.cr_list_wishDesc);
+        inWishPlace = (EditText) findViewById(R.id.cr_list_wishPlace);
 
         // Create button
-        Button btn_createWish = (Button) findViewById(R.id.btn_create_save);
+        Button btn_createWish = (Button) findViewById(R.id.btn_create_create);
         Button btn_createCancel = (Button) findViewById(R.id.btn_create_cancel);
 
         btn_createWish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String wN = inWishName.getText().toString();
-                String wD = inWishDesc.getText().toString();
-                String wPl = inWishPlace.getText().toString();
-                AddWish addWish = new AddWish();
-                addWish.execute();
+                String wn = inWishName.getText().toString();
+                String wd = inWishDesc.getText().toString();
+                String wpl = inWishPlace.getText().toString();
+                if (!wn.isEmpty() && !wd.isEmpty() && !wpl.isEmpty()) {
+                    createWishList(un, wl, wn, wd, wpl);
+                } else {
+                    Toast.makeText(CreateWishListActivity.this, "Please add a wish", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
         btn_createCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent listScreen = new Intent(CreateWishListActivity.this, WishListActivity.class);
+                listScreen.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(listScreen);
             }
         });
     }
 
-    class AddWish extends AsyncTask<String, String, String> {
+    private void createWishList(final String un, final String wl, final String wn, final String wd, final String wpl) {
 
-        @Override
-        protected void onPreExecute() {
-            pDialog = new ProgressDialog(CreateWishListActivity.this);
-            pDialog.setMessage("Creating wishList. Please wait...");
-            pDialog.setIndeterminate(false);
-            pDialog.setCancelable(false);
-            pDialog.show();
-        }
+        pDialog.setMessage("Creating wishlist. Please wait...");
+        pDialog.show();
 
-        @Override
-        protected String doInBackground(String... params) {
-            HttpURLConnection conn;
-            String result = "";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_CREATE_LIST,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        pDialog.dismiss();
+                        Log.d("Create wl + add wish: ", response);
 
-            try {
-                URL url = new URL("http://ec2-54-191-47-17.us-west-2.compute.amazonaws.com/test_login/createWish.php");
-                Map<String, Object> parameters = new LinkedHashMap<>();
-                parameters.put("wName", params[0]);
-                parameters.put("wDesc", params[1]);
-                parameters.put("wPl", params[2]);
+                        try {
+                            JSONObject jObj = new JSONObject(response);
+                            int success = jObj.getInt(RET_SUCCESS);
 
-                //JSONObject json = jsonParser.makeHttpRequest(urlString, "POST", parameters);
-                // Build and encode parameters
-                StringBuilder postData = new StringBuilder();
-                for (Map.Entry<String, Object> param : parameters.entrySet()) {
-                    if (postData.length() != 0) postData.append('&');
-                    postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
-                    postData.append('=');
-                    postData.append(URLEncoder.encode(String.valueOf(param.getValue()), "UTF-8"));
-                }
-                byte[] postDataBytes = postData.toString().getBytes("UTF-8");
-
-                // Set properties of request
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setDoOutput(true);
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
-                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                conn.getOutputStream().write(postDataBytes);
-
-                // Get response
-                StringBuilder sb = new StringBuilder();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-                String line = null;
-
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line);
-                }
-                result = sb.toString();
-                Log.d("Create response: ", result);
-
-            } catch (IOException e) {
-                Log.d("IO exc: ", e.getLocalizedMessage());
-            } catch (Exception e) {
-                Log.d("Exception: ", e.getLocalizedMessage());
+                            // If successfully added
+                            if (success == 1) {
+                                // Launch main activity
+                                Intent userScreen = new Intent(CreateWishListActivity.this, UserActivity.class);
+                                userScreen.putExtra("un", un);
+                                userScreen.putExtra("wl", wl);
+                                startActivity(userScreen);
+                                finish();
+                            } else {
+                                // Error in login. Get the error message
+                                String errorMsg = jObj.getString("msg");
+                                Toast.makeText(CreateWishListActivity.this, "Error: " + errorMsg, Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            // JSON error
+                            e.printStackTrace();
+                            Toast.makeText(CreateWishListActivity.this, "Register error: " + response, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(CreateWishListActivity.this,error.toString(),Toast.LENGTH_LONG).show();
+                    }
+                })
+        {
+            @Override
+            protected Map<String,String> getParams() {
+                Map<String,String> params = new HashMap<String, String>();
+                params.put(KEY_UN, un);
+                params.put(KEY_WL, wl);
+                params.put(KEY_WN, wn);
+                params.put(KEY_WD, wd);
+                params.put(KEY_WPL, wpl);
+                return params;
             }
-
-            // Parse to json object
-            try {
-                jObj = new JSONObject(result);
-            } catch (JSONException e) {
-                Log.e("JSON Parsing error", e.toString());
-            }
-
-            try {
-                int success = jObj.getInt(RET_SUCCESS);
-                if (success == 1) {
-                    // Successfully added wish
-                    Intent i = new Intent(getApplicationContext(), UserActivity.class);
-                    startActivity(i);
-                    finish();
-                } else {
-                    Toast.makeText(CreateWishListActivity.this, "Failed to add wish", Toast.LENGTH_LONG).show();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            pDialog.dismiss();
-        }
+        };
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AppRequestController.getInstance().addToRequestQueue(stringRequest);
     }
 }

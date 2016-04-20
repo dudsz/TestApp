@@ -21,15 +21,6 @@
         android:padding="2dp"
         >
         <TextView
-            android:id="@+id/wish_username"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:textAlignment="center"
-            android:textAllCaps="false"
-            android:textSize="20sp"
-            />
-        <TextView
             android:id="@+id/wish_listName"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -64,23 +55,12 @@
         android:orientation="vertical"
         >
         <Button
-            android:id="@+id/btn_add"
+            android:id="@+id/btn_createList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:layout_marginTop="10dp"
-            android:text="@string/btn_add"
-            android:background="#F2473F"
-            android:textAllCaps="false"
-            android:textSize="20sp"
-            />
-        <Button
-            android:id="@+id/btn_del"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:layout_marginTop="10dp"
-            android:text="@string/btn_delete"
+            android:text="@string/btn_create"
             android:background="#F2473F"
             android:textAllCaps="false"
             android:textSize="20sp"

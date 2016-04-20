@@ -96,102 +96,12 @@ public class MainActivity extends Activity {
                 }
                 // Create new login
                 if (!un.isEmpty() && !pw.isEmpty()) {
-                    //AsyncLogin loginAttempt = new AsyncLogin();
-                    //loginAttempt.execute(un, pw);
-
                     loginRequest(un, pw);
-                    // Send login info?
                 } else {
-                    Toast.makeText(MainActivity.this,
-                            "Invalid username or password", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "Invalid username or password", Toast.LENGTH_LONG).show();
                 }
             }
         });
-    }
-    private class AsyncLogin extends AsyncTask<String, String, String> {
-
-        @Override
-        protected void onPreExecute() {
-            pDialog = new ProgressDialog(MainActivity.this);
-            pDialog.setMessage("Logging in. Please wait...");
-            pDialog.setIndeterminate(false);
-            pDialog.setCancelable(false);
-            pDialog.show();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            HttpURLConnection conn;
-            String response = "";
-
-            try {
-                URL url = new URL("http://ec2-54-191-47-17.us-west-2.compute.amazonaws.com/test_login/login.php");
-                // Set parameters to be sent
-                Map<String, Object> parameters = new LinkedHashMap<>();
-                parameters.put("un", params[0]);
-                parameters.put("pw", params[1]);
-
-                // Build and encode parameters
-                StringBuilder postData = new StringBuilder();
-                for (Map.Entry<String, Object> param : parameters.entrySet()) {
-                    if (postData.length() != 0) postData.append('&');
-                    postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
-                    postData.append('=');
-                    postData.append(URLEncoder.encode(String.valueOf(param.getValue()), "UTF-8"));
-                }
-                byte[] postDataBytes = postData.toString().getBytes("UTF-8");
-
-                // Set properties of request
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setDoOutput(true);
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
-                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                conn.getOutputStream().write(postDataBytes);
-
-                // Get response
-                StringBuilder sb = new StringBuilder();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-                String line;
-
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line);
-                }
-                response = sb.toString();
-                Log.d("Login response: ", response);
-
-            } catch (IOException e) {
-                Log.d("IO exc: ", e.getLocalizedMessage());
-            } catch (Exception e) {
-                Log.d("Exception: ", e.getLocalizedMessage());
-            }
-
-            // Parse to json object
-            try {
-                jObj = new JSONObject(response);
-            } catch (JSONException e) {
-                Log.e("JSON Parsing error", e.toString());
-            }
-            try {
-                int success = jObj.getInt(RET_SUCCESS);
-                if (success == 1) {
-                    // Successfully added wish
-                    Intent userScreen = new Intent(MainActivity.this, UserActivity.class);
-                    startActivity(userScreen);
-                    finish();
-                } else {
-                    // Add something
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-        @Override
-        protected void onPostExecute(String result) {
-            // Send info
-            pDialog.dismiss();
-        }
     }
 
     private void loginRequest(final String un, final String pw) {
@@ -217,7 +127,7 @@ public class MainActivity extends Activity {
 
                                 Log.d("Username: ", username);
                                 // Launch main activity
-                                Intent userScreen = new Intent(MainActivity.this, UserActivity.class);
+                                Intent userScreen = new Intent(MainActivity.this, WishListActivity.class);
                                 userScreen.putExtra("un", username);
                                 startActivity(userScreen);
                                 finish();
@@ -236,7 +146,7 @@ public class MainActivity extends Activity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MainActivity.this,error.toString(),Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, error.toString(), Toast.LENGTH_LONG).show();
                     }
                 }) {
             @Override

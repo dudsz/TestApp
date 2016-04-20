@@ -37,7 +37,7 @@ public class EditWishActivity extends AppCompatActivity {
 
     Button updBtn, delBtn;
     EditText wishName, wishWList, wishDesc, wishPlace;
-    String wid, wn;
+    String un, wl, wn;
 
     // JSON names
     private static final String RET_SUCCESS = "success";
@@ -57,8 +57,9 @@ public class EditWishActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_wish);
 
         // Get wish id
-        wid = getIntent().getStringExtra("wID");
-        wn = getIntent().getStringExtra("wishName");
+        un = getIntent().getStringExtra("un");
+        wl = getIntent().getStringExtra("wl");
+        wn = getIntent().getStringExtra("wn");
         // save button
         updBtn = (Button) findViewById(R.id.btn_update);
         delBtn = (Button) findViewById(R.id.btn_delete);
@@ -68,10 +69,9 @@ public class EditWishActivity extends AppCompatActivity {
         pDialog.setCancelable(false);
         pDialog.setIndeterminate(false);
 
-        Log.d("WishID: ", wid);
-        Log.d("WishName: ", wn);
+        Log.d("Un: ", un);
 
-        getWish("markus", "Jul", wn);
+        //getWish(un, wl, wn);
 
         // Change buttons
         updBtn.setOnClickListener(new View.OnClickListener() {
@@ -104,20 +104,12 @@ public class EditWishActivity extends AppCompatActivity {
 
                             // If successfully added
                             if (success == 1) {
-
                                 JSONObject wishObj = jObj.getJSONObject(RET_WISH);
 
                                 wishWList = (EditText) findViewById(R.id.wish_wl);
                                 wishName = (EditText) findViewById(R.id.wish_name);
                                 wishDesc = (EditText) findViewById(R.id.wish_desc);
                                 wishPlace = (EditText) findViewById(R.id.wish_place);
-
-                                String wN = wishObj.getString(RET_WISH_NAME);
-                                Log.d("Wn: ", wN);
-                                String wD = wishObj.getString(RET_WISH_DESC);
-                                Log.d("WD: ", wD);
-                                String wP = wishObj.getString(RET_WISH_PLACE);
-                                Log.d("WP: ", wP);
 
                                 wishWList.setText(wl);
                                 wishName.setText(wishObj.getString(RET_WISH_NAME));
