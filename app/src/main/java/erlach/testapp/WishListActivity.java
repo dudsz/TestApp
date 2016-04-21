@@ -3,10 +3,14 @@ package erlach.testapp;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListAdapter;
@@ -29,12 +33,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class WishListActivity extends Activity {
+public class WishListActivity extends AppCompatActivity {
 
     // Declarations
     JSONArray wishes = null;
     ArrayList<HashMap<String, String>> wishLists;
-    ListView lw;
+    private ListView lw;
     private ProgressDialog pDialog;
     String username, wl;
 
@@ -45,10 +49,10 @@ public class WishListActivity extends Activity {
     private static final String RET_SUCCESS = "success";
     private static final String RET_WISHES = "wishes";
     private static final String RET_WISH_LIST = "wishList";
+    //private static final String RET_SHARED_LIST = "sharedList";
     private static final String KEY_USERNAME = "un";
     private static final String KEY_WL = "wl";
     private static final String URL_GET_LISTS = "http://ec2-54-191-47-17.us-west-2.compute.amazonaws.com/test_wishes/getLists.php";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +76,7 @@ public class WishListActivity extends Activity {
         pDialog.setIndeterminate(false);
 
         getLists(username);
+
 
         lw.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

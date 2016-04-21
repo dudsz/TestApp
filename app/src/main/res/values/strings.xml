@@ -37,4 +37,9 @@
     <string name="hint_wl_name">Enter name of wishlist</string>
     <string name="hint_wl_desc">Enter wishlist description</string>
     <string name="hint_create_add">Add a wish to your list</string>
+    <string name="list_shared">Lists shared with you</string>
+    <string name="lists_yours">Your lists</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
