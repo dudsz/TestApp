@@ -25,8 +25,9 @@
         <activity android:name=".UserInfoActivity" />
         <activity android:name=".UserActivity" />
         <activity android:name=".CreateWishListActivity" />
-        <activity android:name=".EditWishActivity"></activity>
-        <activity android:name=".WishListActivity"></activity>
+        <activity android:name=".EditWishActivity" />
+        <activity android:name=".WishListActivity" />
+        <activity android:name=".ChooseListActivity"></activity>
     </application>
 
 </manifest>

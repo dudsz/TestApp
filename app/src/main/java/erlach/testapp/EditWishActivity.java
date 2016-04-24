@@ -71,7 +71,7 @@ public class EditWishActivity extends AppCompatActivity {
 
         Log.d("Un: ", un);
 
-        //getWish(un, wl, wn);
+        getWish(un, wl, wn);
 
         // Change buttons
         updBtn.setOnClickListener(new View.OnClickListener() {
@@ -82,6 +82,7 @@ public class EditWishActivity extends AppCompatActivity {
         delBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Start async task to delete
+                finish();
             }
         });
     }

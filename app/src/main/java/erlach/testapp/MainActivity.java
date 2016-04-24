@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,23 +14,14 @@ import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class MainActivity extends Activity {
@@ -126,8 +116,8 @@ public class MainActivity extends Activity {
                                 String username = user.getString("username");
 
                                 Log.d("Username: ", username);
-                                // Launch main activity
-                                Intent userScreen = new Intent(MainActivity.this, WishListActivity.class);
+                                // Launch wishlist activity
+                                Intent userScreen = new Intent(MainActivity.this, ChooseListActivity.class);
                                 userScreen.putExtra("un", username);
                                 startActivity(userScreen);
                                 finish();

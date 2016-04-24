@@ -37,7 +37,6 @@ public class CreateWishListActivity extends Activity {
     private ProgressDialog pDialog;
     EditText inWishName, inWishDesc, inWishPlace;
     String un, wl;
-    JSONObject jObj = null;
 
     private static final String RET_SUCCESS = "success";
     private static final String KEY_UN = "un";
@@ -87,9 +86,7 @@ public class CreateWishListActivity extends Activity {
         btn_createCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent listScreen = new Intent(CreateWishListActivity.this, WishListActivity.class);
-                listScreen.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(listScreen);
+                finish();
             }
         });
     }

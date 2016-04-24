@@ -33,15 +33,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class WishListActivity extends AppCompatActivity {
+public class WishListActivity extends Activity {
 
     // Declarations
     JSONArray wishes = null;
     ArrayList<HashMap<String, String>> wishLists;
     private ListView lw;
     private ProgressDialog pDialog;
-    String username, wl;
 
+    String username;
     TextView showListName;
     Button createBtn;
 
@@ -82,7 +82,6 @@ public class WishListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Get wishlist
-                //String wl = "Jul";
                 String wl = ((TextView) view.findViewById(R.id.wishList)).getText().toString();
                 Intent userScreen = new Intent(WishListActivity.this, UserActivity.class);
                 // Sending un and wl to activity

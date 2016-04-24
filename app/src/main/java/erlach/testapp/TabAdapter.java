@@ -1,26 +1,24 @@
+package erlach.testapp;
+
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
-import erlach.testapp.One;
-import erlach.testapp.Two;
 
 /**
  * Created by Mackan on 2016-04-21.
  */
 public class TabAdapter extends FragmentStatePagerAdapter {
 
-    int mNumOfTabs;
 
-    public TabAdapter(FragmentManager fm, int NumOfTabs) {
+    public TabAdapter(FragmentManager fm) {
         super(fm);
-        this.mNumOfTabs = NumOfTabs;
     }
 
     @Override
-    public Fragment getItem(int position) {
+    public Fragment getItem(int index) {
 
-        switch (position) {
+        switch (index) {
             case 0:
                 One tab1 = new One();
                 return tab1;
@@ -39,6 +37,6 @@ public class TabAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return mNumOfTabs;
+        return 2;
     }
 }

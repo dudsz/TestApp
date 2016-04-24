@@ -1,24 +1,79 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:orientation="vertical"
-    tools:context="erlach.testapp.One">
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.listsofgifts.MainActivity"
+    >
 
-    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:id="@+id/topLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1.3"
+        android:orientation="horizontal"
+        android:padding="2dp"
+        >
+        <TextView
+            android:id="@+id/wish_sharedBy"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textSize="20sp"
+            />
+        <TextView
+            android:id="@+id/wish_listName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textSize="20sp"
+            />
 
-    <TextView
-        android:id="@+id/frag_two"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tab 2"
-        android:textSize="40dp"
-        android:textStyle="bold"
-        android:layout_centerInParent="true"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/middleLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="0.5"
+        android:orientation="vertical"
+        android:padding="2dp"
+        >
+        <ListView
+            android:id="@+id/list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:choiceMode="multipleChoice"
+            >
+        </ListView>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/botLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1.5"
+        android:orientation="vertical"
+        >
+        <Button
+            android:id="@+id/btn_home"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/btn_create"
+            android:background="#F2473F"
+            android:textAllCaps="false"
+            android:textSize="20sp"
+            />
 
-</RelativeLayout>
-
-
-
-
+    </LinearLayout>
+</LinearLayout>
 
